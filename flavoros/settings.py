@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'your-secret-key'  # 🚨 Replace in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['foodos-0797.onrender.com']
 
 # 🧩 Installed Apps
 INSTALLED_APPS = [
