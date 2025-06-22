@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'your-secret-key'  # 🚨 Replace in production!
 DEBUG = True
-ALLOWED_HOSTS = ['foodos-0797.onrender.com']
+ALLOWED_HOSTS = ['*']  # 🚨 Replace with your domain in production!]
 
 # 🧩 Installed Apps
 INSTALLED_APPS = [
@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'accounts',
     'recipes',
     'MealPlans',
-   
 ]
 
 # 🌍 Middleware
@@ -96,19 +95,16 @@ USE_TZ = True
 # 🧃 Static & Media
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 👈 For collectstatic
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # 🔐 DRF Settings
-
 REST_FRAMEWORK = {
-    
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
 
 # 🌐 CORS (for Android or external frontend)
 CORS_ALLOW_ALL_ORIGINS = True
@@ -117,5 +113,12 @@ CORS_ALLOW_ALL_ORIGINS = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
-
+DJOSER = {
+    'SEND_ACTIVATION_EMAIL': True,
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'ACTIVATION_URL': 'activate/{uid}/{token}/',
+    'SERIALIZERS': {
+        'user_create': 'djoser.serializers.UserCreateSerializer',
+    },
+}
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
