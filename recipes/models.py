@@ -33,19 +33,51 @@ class Recipe(models.Model):
     ]
 
     name = models.CharField(max_length=200)
-   # user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='recipes', null=True, blank=True)  # Removed invalid default
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='recipes',
+        null=True,
+        blank=True,
+        help_text="User who created this recipe"
+    )
     description = models.TextField(blank=True)
-    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
-    steps = models.TextField()
+    ingredients = models.ManyToManyField('Ingredient', through='RecipeIngredient')
+    steps = models.TextField(help_text="Instructions in plain text or markdown")
     cook_time_minutes = models.PositiveIntegerField()
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES)
-    cuisine = models.CharField(max_length=100, blank=True)
+    cuisine = models.CharField(max_length=100, blank=True, help_text="e.g. Indian, Italian")
     is_public = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    category = models.ForeignKey(RecipeCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='recipes')
+    category = models.ForeignKey(
+        'RecipeCategory',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='recipes'
+    )
+
+    # 🔥 New fields for personalized compatibility
+    suitable_for_diet_types = models.ManyToManyField(
+        'DietType',
+        blank=True,
+        help_text="Which diets this recipe suits e.g. Vegan, Keto"
+    )
+    contains_nuts = models.BooleanField(default=False)
+    contains_gluten = models.BooleanField(default=False)
+    contains_dairy = models.BooleanField(default=False)
+
+    taste_tags = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="e.g. spicy, tangy, sweet"
+    )
+
+    calories = models.PositiveIntegerField(null=True, blank=True, help_text="Approximate calorie content")
 
     def __str__(self):
         return self.name
+
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
@@ -54,3 +86,13 @@ class RecipeIngredient(models.Model):
 
     def __str__(self):
         return f"{self.quantity} of {self.ingredient.name} for {self.recipe.name}"
+
+class DietType(models.Model):
+    name = models.CharField(
+        max_length=30,
+        choices=CustomUser.DIET_TYPE_CHOICES,
+        unique=True
+    )
+
+    def __str__(self):
+        return self.get_name_display()
