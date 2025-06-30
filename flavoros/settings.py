@@ -20,6 +20,8 @@ INSTALLED_APPS = [
     # 🧠 Third-party apps
     'rest_framework',
     'corsheaders',
+    'cloudinary',
+    'cloudinary_storage',
 
     # 🍳 Local apps
     'accounts',
@@ -122,3 +124,12 @@ DJOSER = {
     },
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dxf2c3jnr',
+    'API_KEY': '228477524253282',
+    'API_SECRET': 'EZ6s7G301adgSnEbL1VL8WyZl-o',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

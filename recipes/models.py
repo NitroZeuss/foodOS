@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 from accounts.models import CustomUser
 
 class RecipeCategory(models.Model):
@@ -25,6 +26,7 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.name
 
+
 class Recipe(models.Model):
     DIFFICULTY_CHOICES = [
         ('Easy', 'Easy'),
@@ -40,6 +42,17 @@ class Recipe(models.Model):
         null=True,
         blank=True,
         help_text="User who created this recipe"
+    )
+    image = CloudinaryField(
+        'image',
+        help_text="Main image of the recipe. Required."
+    )
+    video = CloudinaryField(
+        'video',
+        resource_type='video',
+        blank=True,
+        null=True,
+        help_text="Optional video showing how to prepare the recipe"
     )
     description = models.TextField(blank=True)
     ingredients = models.ManyToManyField('Ingredient', through='RecipeIngredient')
@@ -57,7 +70,6 @@ class Recipe(models.Model):
         related_name='recipes'
     )
 
-    # 🔥 New fields for personalized compatibility
     suitable_for_diet_types = models.ManyToManyField(
         'DietType',
         blank=True,
@@ -109,7 +121,7 @@ class RecipeRating(models.Model):
 
     def __str__(self):
         return f"{self.user.username} rated {self.recipe.name} {self.rating}/5"
-    
+
 class RecipeBookmark(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='bookmarks')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='bookmarks')
@@ -120,7 +132,7 @@ class RecipeBookmark(models.Model):
 
     def __str__(self):
         return f"{self.user.username} bookmarked {self.recipe.name}"
-    
+
 class RecipeComment(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='recipe_comments')
@@ -129,8 +141,7 @@ class RecipeComment(models.Model):
 
     def __str__(self):
         return f"{self.user.username} commented on {self.recipe.name}"
-    
-    
+
 class RecipeNutrition(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='nutrition')
     calories = models.PositiveIntegerField(null=True, blank=True, help_text="Approximate calorie content")
@@ -140,5 +151,3 @@ class RecipeNutrition(models.Model):
 
     def __str__(self):
         return f"Nutrition info for {self.recipe.name}"
-
-
