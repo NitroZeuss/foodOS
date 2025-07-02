@@ -125,11 +125,20 @@ DJOSER = {
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+import cloudinary
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dxf2c3jnr',
     'API_KEY': '228477524253282',
     'API_SECRET': 'EZ6s7G301adgSnEbL1VL8WyZl-o',
 }
+
+
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET']
+)
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
